@@ -1,15 +1,13 @@
 package com.libing.controller;
 
-import com.libing.entity.Admin;
-import com.libing.entity.User;
-import com.libing.entity.UserListForm;
+import com.libing.entity.*;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by libing on 2016/8/25.
@@ -75,17 +73,26 @@ public class TestController {
         return user.toString() + " " + admin.toString();
     }
 
+    /**
+     * @InitBinder 绑定的数据,只在此 Controller 中有用
+     * 其中 @InitBinder("user") 中的 "user" 对应参数为 "user" 的参数传递
+     */
     @InitBinder("user")
     public void initUser(WebDataBinder webDataBinder) {
         webDataBinder.setFieldDefaultPrefix("user.");
     }
+
+    /**
+     * @InitBinder 绑定的数据,只在此 Controller 中有用
+     * 其中 @InitBinder("admin") 中的 "admin" 对应参数为 "admin" 的参数传递
+     */
 
     @InitBinder("admin")
     public void initAdmin(WebDataBinder webDataBinder) {
         webDataBinder.setFieldDefaultPrefix("admin.");
     }
 
-    /**************************************同属性的多对象**************************************/
+    /**************************************List 绑定**************************************/
 
     /*http://localhost:8080/springmvc/list?users[0].name=Tom&users[1].name=Lucy
     list 绑定要注意连续性，如果不连续，例如：users[0].name=Tom&users[4].name=Lucy
@@ -93,7 +100,75 @@ public class TestController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public String list(UserListForm userListForm) {
-        return userListForm.toString();
+        return "listSize:" + userListForm.getUsers().size() + " " + userListForm.toString();
+    }
+
+    /**************************************Set 绑定**************************************/
+
+    /*http://localhost:8080/springmvc/set?users[0].name=Tom&users[1].name=Tom
+    使用 set 进行数据绑定时要对其进行初始化，否则会报获取不到对应下标数据的异常
+    由于 springmvc 对 set 数据绑定支持的不是很友好，建议实际应用中采用 list 的方式*/
+    @RequestMapping(value = "/set")
+    @ResponseBody
+    public String set(UserSetForm userSetForm) {
+        return "setSize:" + userSetForm.getUsers().size() + " " + userSetForm.toString();
+    }
+
+    /**************************************Map 绑定**************************************/
+
+    /*http://localhost:8080/springmvc/map?users['X'].name=Tom&users['X'].age=10&users['Y'].name=Lucy
+    */
+    @RequestMapping(value = "/map")
+    @ResponseBody
+    public String map(UserMapForm userMapForm) {
+        return "mapSize:" + userMapForm.getUsers().size() + " " + userMapForm.toString();
+    }
+
+    /**************************************Json 绑定**************************************/
+
+    /*http://localhost:8080/springmvc/json
+    {"name":"Tom","age":16,"contactInfo":{"address":"beijing","phone":"10010"}}*/
+    @RequestMapping(value = "/json",
+            method = RequestMethod.POST,
+            produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public String json(@RequestBody User user) {
+        return user.toString();
+    }
+
+    /**************************************Xml 绑定**************************************/
+
+    /*http://localhost:8080/springmvc/xml
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <admin>
+        <name>Jim</name>
+        <age>19</age>
+    </admin>
+    */
+    @RequestMapping(value = "/xml",
+            method = RequestMethod.POST,
+            produces = {"application/xml;charset=UTF-8"})
+    @ResponseBody
+    public String xml(@RequestBody Admin admin) {
+        return admin.toString();
+    }
+
+    /**************************************Date 绑定**************************************/
+
+    @RequestMapping(value = "/date1",
+            method = RequestMethod.GET)
+    @ResponseBody
+    public String date1(Date date1) {
+        return date1.toString();
+    }
+
+    /**
+     * @InitBinder 绑定的数据,只在此 Controller 中有用
+     * 其中 @InitBinder("date1") 中的 "date1" 对应参数为 "date1" 的参数传递
+     */
+    @InitBinder("date1")
+    public void initDate1(WebDataBinder webDataBinder) {
+        webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
     }
 
 }

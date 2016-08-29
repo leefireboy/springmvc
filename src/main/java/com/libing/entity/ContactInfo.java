@@ -8,6 +8,14 @@ public class ContactInfo {
     private String phone;
     private String address;
 
+    @Override
+    public String toString() {
+        return "ContactInfo{" +
+                "phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -22,14 +30,6 @@ public class ContactInfo {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    @Override
-    public String toString() {
-        return "ContactInfo{" +
-                "phone='" + phone + '\'' +
-                ", address='" + address + '\'' +
-                '}';
     }
 
 }

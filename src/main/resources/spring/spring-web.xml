@@ -13,7 +13,16 @@
 	<!-- springMVC -->
 	<!-- 简化配置： (1) 自动注册 DefaultAnnotationHandlerMapping, AnnotationMethodHandlerAdapter 
 		(2) 提供一系列功能：数据绑定;数字和日期的 format;@NumberFormat;@DateTimeFormat;xml 和 json 的默认读写支持 -->
-	<mvc:annotation-driven />
+	<mvc:annotation-driven conversion-service="myDateFormatter" />
+
+    <!-- 全局的字符串日期格式化，格式化模板 "yyyy-MM-dd" -->
+    <bean id="myDateFormatter" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="formatters">
+            <set>
+                <bean class="com.libing.common.MyDateFormatter" />
+            </set>
+        </property>
+    </bean>
 
 	<!-- servlet-mapping 映射路径："/" -->
 	<!-- 静态资源默认 servlet 配置
@@ -21,14 +30,14 @@
 		2. 允许使用 "/" 做整体映射 -->
 	<mvc:default-servlet-handler/>
 
+	<!-- 扫描 web 相关的 bean -->
+	<context:component-scan base-package="com.libing" />
+
 	<!-- 配置 jsp 显示 ViewResolver -->
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/jsp" />
 		<property name="suffix" value=".jsp" />
 	</bean>
-	
-	<!-- 扫描 web 相关的 bean -->
-	<context:component-scan base-package="com.libing" />
 
 </beans>
