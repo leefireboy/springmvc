@@ -154,7 +154,8 @@ public class TestController {
     }
 
     /**************************************Date 绑定**************************************/
-
+    /*http://localhost:8080/springmvc/date1?date1=2015-08-08
+    如果采用了全局的日期类型字符串格式化，那么 @InitBinder("***") 可以省略掉*/
     @RequestMapping(value = "/date1",
             method = RequestMethod.GET)
     @ResponseBody
@@ -166,9 +167,20 @@ public class TestController {
      * @InitBinder 绑定的数据,只在此 Controller 中有用
      * 其中 @InitBinder("date1") 中的 "date1" 对应参数为 "date1" 的参数传递
      */
-    @InitBinder("date1")
+    /*@InitBinder("date1")
     public void initDate1(WebDataBinder webDataBinder) {
         webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
+    }*/
+
+    /**************************************DateFormatter 转换参数**************************************/
+
+    /*http://localhost:8080/springmvc/date2?date2=2015-08-08
+    如果采用了全局的日期类型字符串格式化，那么 @InitBinder("***") 可以省略掉*/
+    @RequestMapping(value = "/date2",
+            method = RequestMethod.GET)
+    @ResponseBody
+    public String date2(Date date2) {
+        return date2.toString();
     }
 
 }

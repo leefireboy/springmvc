@@ -13,16 +13,25 @@
 	<!-- springMVC -->
 	<!-- 简化配置： (1) 自动注册 DefaultAnnotationHandlerMapping, AnnotationMethodHandlerAdapter 
 		(2) 提供一系列功能：数据绑定;数字和日期的 format;@NumberFormat;@DateTimeFormat;xml 和 json 的默认读写支持 -->
-	<mvc:annotation-driven conversion-service="myDateFormatter" />
+	<mvc:annotation-driven conversion-service="myDateConverter" />
 
-    <!-- 全局的字符串日期格式化，格式化模板 "yyyy-MM-dd" -->
-    <bean id="myDateFormatter" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+    <!-- 全局的字符串日期格式化方式一，格式化模板 "yyyy-MM-dd" -->
+    <!--<bean id="myDateFormatter" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
         <property name="formatters">
             <set>
                 <bean class="com.libing.common.MyDateFormatter" />
             </set>
         </property>
-    </bean>
+    </bean>-->
+
+	<!-- 全局的字符串日期格式化方式二，格式化模板 "yyyy-MM-dd" -->
+	<bean id="myDateConverter" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<set>
+				<bean class="com.libing.common.MyDateConverter" />
+			</set>
+		</property>
+	</bean>
 
 	<!-- servlet-mapping 映射路径："/" -->
 	<!-- 静态资源默认 servlet 配置
